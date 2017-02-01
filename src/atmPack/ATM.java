@@ -209,7 +209,7 @@ public class ATM {
     }
     */
     
-    public ATM takeOut1(int amount) {
+    public ATM takeOut(int amount) {
         if (ATM.isSuspended())
             return null;
         if (amount < 0 || amount == 10 || amount == 30)
@@ -273,7 +273,7 @@ public class ATM {
         return new ATM(hNeed, fNeed, tNeed);    
         
     }
-    
+    /*
     public ATM takeOut(int amount) {
         if (ATM.isSuspended())
             return null;
@@ -312,7 +312,7 @@ public class ATM {
         return new ATM(h, f, t);
         
     }
-    
+    */
     public ATM minBills(double amount) {
         if (amount % 10 != 0) 
             throw new IllegalArgumentException(
