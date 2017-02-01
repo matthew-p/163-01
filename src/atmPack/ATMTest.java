@@ -361,8 +361,10 @@ public class ATMTest {
 	    ATM s1 = new ATM(1, 10, 1);
 	    ATM s2 = new ATM(0, 1, 20);
 	    
-	    assertTrue(s1.toString().equals("1 hundred dollar bill, 10 fifty dollar bills, 1 twenty dollar bill"));
-	    assertTrue(s2.toString().equals("0 hundred dollar bills, 1 fifty dollar bill, 20 twenty dollar bills"));    
+	    assertTrue(s1.toString().equals("1 hundred dollar bill, " + 
+	            "10 fifty dollar bills, 1 twenty dollar bill"));
+	    assertTrue(s2.toString().equals("0 hundred dollar bills, " + 
+	            "1 fifty dollar bill, 20 twenty dollar bills"));    
 	}
 
 	// load and save combined. 

@@ -39,9 +39,17 @@ public class ATM {
     }
     
     public ATM(ATM other) {
+        if (other.getHundreds() >= 0 && 
+            other.getFifties() >= 0 &&
+            other.getTwenties() >=0)   {
+            
         this.hundreds = other.getHundreds();
         this.fifties = other.getFifties();
         this.twenties = other.getTwenties();
+        } else {
+            throw new IllegalArgumentException(
+                    "Amounts must be positive");
+        }
     }
 
     
@@ -58,14 +66,23 @@ public class ATM {
     }
 
     public void setHundreds(int hundreds) {
+        if (hundreds < 0)
+            throw new IllegalArgumentException(
+                    "Amount must be positive");
         this.hundreds = hundreds;
     }
 
     public void setFifties(int fifties) {
+        if (fifties < 0)
+            throw new IllegalArgumentException(
+                    "Amount must be positive");
         this.fifties = fifties;
     }
 
     public void setTwenties(int twenties) {
+        if (twenties < 0)
+            throw new IllegalArgumentException(
+                    "Amount must be positive");
         this.twenties = twenties;
     }
     public static boolean equals(ATM other1, ATM other2) {
@@ -98,9 +115,9 @@ public class ATM {
     }
     public int compareTo(ATM other) {
         int rtn = 1;
-        if (this.totalValue() == other.totalValue())
+        if (totalValue() == other.totalValue())
             rtn = 0;
-        else if (this.totalValue() < other.totalValue())
+        else if (totalValue() < other.totalValue())
             rtn = -1;
         return rtn;
     }
@@ -108,9 +125,9 @@ public class ATM {
         if (ATM.isSuspended())
             return;
         if (hundreds >= 0 && fifties >= 0 && twenties >= 0) {
-            setHundreds(this.getHundreds() + hundreds);
-            this.setFifties(this.getFifties() + fifties);
-            this.setTwenties(this.getTwenties() + twenties); 
+            setHundreds(getHundreds() + hundreds);
+            setFifties(getFifties() + fifties);
+            setTwenties(getTwenties() + twenties); 
         }
         else 
             throw new IllegalArgumentException(
@@ -120,9 +137,9 @@ public class ATM {
         if (ATM.isSuspended())
             return;
         if (hundreds >= 0 && fifties >= 0 && twenties >= 0) {
-            this.setHundreds(this.getHundreds() - hundreds);
-            this.setFifties(this.getFifties() - fifties); 
-            this.setTwenties(this.getTwenties() - twenties);
+            setHundreds(getHundreds() - hundreds);
+            setFifties(getFifties() - fifties); 
+            setTwenties(getTwenties() - twenties);
         }
         else 
             throw new IllegalArgumentException(
@@ -131,94 +148,21 @@ public class ATM {
     public void takeOut(ATM other) {
         if (ATM.isSuspended())
             return;
-        this.takeOut(other.getHundreds(), 
+        takeOut(other.getHundreds(), 
                      other.getFifties(), 
                      other.getTwenties());
     }
-    /*
-    public ATM takeOut(int amount) {
-        if (ATM.isSuspended())
-            return null;
-        if (amount % 10 != 0)   {
-            throw new IllegalArgumentException(
-                    "Amount must be divisible by 10");
-        }
-        else {
-            int minTwenty = 0;
-            int minFifty = 0;
-            int neededHundreds = 0;
-            int neededFifties = 0;
-            int neededTwenties = 0;
-            int[] tArray = {0,3,1,4,2};
-            long lAmount = amount;
-            if ( lAmount >= 50) {
-                minTwenty = tArray[(int)((lAmount % 50)/10)];
-                if (minTwenty > this.getTwenties())
-                    return null;
-                
-                minFifty = (int)(lAmount / 10 % 2);
-                if (minFifty > this.getFifties())
-                    return null;
-                neededHundreds = (int)(lAmount / 100);
-                if (lAmount % 100 == 30 || lAmount % 100 == 10) 
-                    neededHundreds--;
-                if (neededHundreds > this.getHundreds()) {
-                    neededFifties = (neededHundreds - 
-                            this.getHundreds()) * 2;
-                    neededHundreds = this.getHundreds();
-                }
-                if (neededFifties > this.getFifties() - minFifty) {
-                    neededTwenties = (neededFifties - 
-                            (this.getFifties() - minFifty) / 2) * 5;
-                    neededFifties = (this.getFifties() - minFifty) / 
-                            2 + minFifty;
-                } else {
-                    neededFifties += minFifty;
-                }
-                if (neededTwenties > (this.getTwenties() - minTwenty)) {
-                   return null;
-                } else {
-                    neededTwenties += minTwenty;
-                }
-                this.setHundreds(this.getHundreds() - neededHundreds);
-                this.setFifties(this.getFifties() - neededFifties);
-                this.setTwenties(this.getTwenties() - neededTwenties);
-                return new ATM(neededHundreds, 
-                               neededFifties, 
-                               neededTwenties);
-            } else if (lAmount == 10)
-                return null;
-            else if (lAmount == 20)
-                if (this.getTwenties() < 1)
-                    return null;
-                else {
-                    setTwenties(getTwenties() - 1);
-                    return new ATM(0,0,1);
-                }
-            else if (lAmount == 30)
-                return null;
-            else 
-                if (getTwenties() < 2) 
-                    return null;  
-                else {
-                    this.setTwenties(getTwenties() - 2);
-                    return new ATM(0,0,2);
-                }
-        }
-        
-    }
-    */
     
     public ATM takeOut(int amount) {
         if (ATM.isSuspended())
             return null;
-        if (amount < 0 || amount == 10 || amount == 30)
+        if (amount == 10 || amount == 30)
             return null;
         if (amount == 0) 
             return new ATM (0,0,0);
-        if (amount % 10 != 0)   {
+        if (amount < 0 || amount % 10 != 0)   {
             throw new IllegalArgumentException(
-                    "Amount must be divisible by 10");
+                    "Amount must be positive and divisible by 10");
         }
         if (totalValue() < amount)
             return null;
@@ -273,46 +217,7 @@ public class ATM {
         return new ATM(hNeed, fNeed, tNeed);    
         
     }
-    /*
-    public ATM takeOut(int amount) {
-        if (ATM.isSuspended())
-            return null;
-        if (amount % 10 != 0)   {
-            throw new IllegalArgumentException(
-                    "Amount must be divisible by 10");
-        }
-        int[] denominations = new int[] {100, 50, 20};
-        int h = 0, f = 0, t = 0;
-        HashMap<Integer, Integer> map = CoinCount.minChange(denominations, amount);
-        if (map.get(100) == null) 
-            h = 0;
-        else h = map.get(100);
-        if (map.get(50) == null)
-            f = 0;
-        else 
-            f = map.get(50);
-        if (map.get(20) == null)
-            t = 0;
-        else 
-            t = map.get(20);
-        
-        int remH = 0, remF = 0, remT = 0;
-        
-        if (h > getHundreds()) {
-            remH = h - getHundreds(); 
-        }
-        if (f + (remH * 2) > getFifties()) {
-            int fCount = getFifties();
-            remF = f - getFifties();
-            
-        } 
-        if (t + (remF / 2) * 5) )    
-        
-
-        return new ATM(h, f, t);
-        
-    }
-    */
+    
     public ATM minBills(double amount) {
         if (amount % 10 != 0) 
             throw new IllegalArgumentException(
@@ -344,9 +249,9 @@ public class ATM {
                 "{0,choice,0#bills|1#bill|1<bills}, " + 
                 "{1} fifty dollar {1,choice,0#bills|1#bill|1<bills}, " + 
                 "{2} twenty dollar {2,choice,0#bills|1#bill|1<bills}",
-                this.getHundreds(), 
-                this.getFifties(), 
-                this.getTwenties());
+                getHundreds(), 
+                getFifties(), 
+                getTwenties());
         return rtn;
     }
     
@@ -356,13 +261,18 @@ public class ATM {
      * @param filename name of the file to be written to
      * @throws FileNotFoundException 
      */
-    public void save(String filename) throws FileNotFoundException {        
-        PrintWriter pWriter = new PrintWriter(filename);
-        pWriter.println(this.getHundreds());
-        pWriter.println(this.getFifties());
-        pWriter.println(this.getTwenties());
-        
-        pWriter.close();
+    public void save(String filename) throws FileNotFoundException {
+        try {
+            PrintWriter pWriter = new PrintWriter(filename);
+            pWriter.println(getHundreds());
+            pWriter.println(getFifties());
+            pWriter.println(getTwenties());
+            
+            pWriter.close();
+        } catch (Exception e) {
+            throw new FileNotFoundException(e.getMessage());
+        }
+
     }
     
     /**
@@ -372,15 +282,18 @@ public class ATM {
      * @throws FileNotFoundException 
      */
     public void load(String filename) throws FileNotFoundException {
-        Scanner scnr = new Scanner(new BufferedReader(
-                       new FileReader(filename)));
-        
-        this.setHundreds(scnr.nextInt());
-        this.setFifties(scnr.nextInt());
-        this.setTwenties(scnr.nextInt());
-        
-        scnr.close();
-        
+        try {
+            Scanner scnr = new Scanner(new BufferedReader(
+                           new FileReader(filename)));
+            
+            setHundreds(scnr.nextInt());
+            setFifties(scnr.nextInt());
+            setTwenties(scnr.nextInt());
+            
+            scnr.close();
+        } catch (Exception e) {
+            throw new FileNotFoundException(e.getMessage());
+        }
     }
     
     /**
@@ -450,25 +363,5 @@ public class ATM {
                 // prove the class is functioning correctly.
         }
 
-    
-    
-    
-    /*
-    public ATM tOut(double amount) {
-        
-    }
-    public int[] findCount(int targetAmount, int[] availableCounts, int currentCounts) {
-        // hundreds, fifties, twenties
-        if (targetAmount == 0) 
-            return [0,0,0];
-        if (targetAmount >= 100 && availableCounts[0] >= 1) {
-            
-            findCount(targetAmount - 100, 
-                    [availableCounts[0] - 1, availableCounts[1], availableCounts[2]], 
-                    [currentCounts[0] + 1, currentCounts[1], currentCounts[2]]);
-        }
-            
-    }
-    */
     
 }
