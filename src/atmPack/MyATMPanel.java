@@ -14,7 +14,7 @@ public class MyATMPanel extends JPanel {
     private JLabel fiftiesColLbl;
     private JLabel twentiesColLbl;
     private JLabel hundredsCountLbl, fiftiesCountLbl, twentiesCountLbl;
-    private JTextField hField, fField, tField;
+    private JTextField hField, fField, tField, fileName;
     
     private JPanel atmPanel;
     
@@ -23,8 +23,7 @@ public class MyATMPanel extends JPanel {
     public MyATMPanel() {
         
         myAtm = new ATM();
-        
-       // headingLbl = new JLabel("<html><font size=+2>ATM:</font></html>");
+
         hundredsColLbl = new JLabel("<html><font size=+1>Hundreds</font></html>");
         fiftiesColLbl = new JLabel("<html><font size=+1>Fifties</font></html>");
         twentiesColLbl = new JLabel("<html><font size=+1>Twenties</font></html>");
@@ -36,6 +35,7 @@ public class MyATMPanel extends JPanel {
         hField = new JTextField("0");
         fField = new JTextField("0");
         tField = new JTextField("0");
+        fileName = new JTextField("My ATM.txt");
         
         takeOutBtn = new JButton("Remove Bills");
         putInBtn = new JButton("Add Bills");
@@ -65,6 +65,7 @@ public class MyATMPanel extends JPanel {
         atmPanel.add(takeOutBtn);
         atmPanel.add(putInBtn);
         atmPanel.add(loadBtn);
+        atmPanel.add(fileName);
         
         add(atmPanel);
         atmPanel.setVisible(true);
@@ -75,53 +76,57 @@ public class MyATMPanel extends JPanel {
         @Override
         public void actionPerformed(ActionEvent e) {
             if (e.getSource() == saveBtn) {
-                JFileChooser chooser = new JFileChooser();
-                FileNameExtensionFilter filter = new FileNameExtensionFilter(
-                    "Text Files", "txt");
-                chooser.setFileFilter(filter);
-                int returnVal = chooser.showSaveDialog(null);
-                if(returnVal == JFileChooser.APPROVE_OPTION) {
-                    try {
-                        myAtm.save(chooser.getSelectedFile().getName());
-                    } catch (FileNotFoundException ex) {
-                        new FileNotFoundException(ex.getMessage());
-                    }
+                try {
+                    myAtm.save(fileName.getText());
+                } catch (FileNotFoundException ex) {
+                    new FileNotFoundException(ex.getMessage());
                 }
+                
             }
+
             if (e.getSource() == loadBtn) {
-                JFileChooser chooser = new JFileChooser();
-                FileNameExtensionFilter filter = new FileNameExtensionFilter(
-                    "Text Files", "txt");
-                chooser.setFileFilter(filter);
-                int returnVal = chooser.showOpenDialog(null);
-                if(returnVal == JFileChooser.APPROVE_OPTION) {
-                    try {
-                        myAtm.load(chooser.getSelectedFile().getName());
-                        
+
+                try {
+                    myAtm.load(fileName.getText());
+                    
+                    hundredsCountLbl.setText(Integer.toString(myAtm.getHundreds()));
+                    fiftiesCountLbl.setText(Integer.toString(myAtm.getFifties()));
+                    twentiesCountLbl.setText(Integer.toString(myAtm.getTwenties()));
+                    
+                } catch (FileNotFoundException ex) {
+                    new FileNotFoundException(ex.getMessage());
+                }
+                
+            }
+            if (e.getSource() == takeOutBtn) {
+                try {
+                        myAtm.takeOut(Integer.parseInt(hField.getText()), 
+                                      Integer.parseInt(fField.getText()), 
+                                      Integer.parseInt(tField.getText()));
                         hundredsCountLbl.setText(Integer.toString(myAtm.getHundreds()));
                         fiftiesCountLbl.setText(Integer.toString(myAtm.getFifties()));
                         twentiesCountLbl.setText(Integer.toString(myAtm.getTwenties()));
-                        
-                    } catch (FileNotFoundException ex) {
-                        new FileNotFoundException(ex.getMessage());
-                    }
+                        hField.setText("0");
+                        fField.setText("0");
+                        tField.setText("0");
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(null, ex.getMessage());
                 }
             }
-            if (e.getSource() == takeOutBtn) {
-                myAtm.takeOut(Integer.parseInt(hField.getText()), 
-                              Integer.parseInt(fField.getText()), 
-                              Integer.parseInt(tField.getText()));
-                hundredsCountLbl.setText(Integer.toString(myAtm.getHundreds()));
-                fiftiesCountLbl.setText(Integer.toString(myAtm.getFifties()));
-                twentiesCountLbl.setText(Integer.toString(myAtm.getTwenties()));
-            }
             if (e.getSource() == putInBtn) {
-                myAtm.putIn(Integer.parseInt(hField.getText()), 
-                            Integer.parseInt(fField.getText()), 
-                            Integer.parseInt(tField.getText()));
-                hundredsCountLbl.setText(Integer.toString(myAtm.getHundreds()));
-                fiftiesCountLbl.setText(Integer.toString(myAtm.getFifties()));
-                twentiesCountLbl.setText(Integer.toString(myAtm.getTwenties()));
+                try {
+                    myAtm.putIn(Integer.parseInt(hField.getText()), 
+                                Integer.parseInt(fField.getText()), 
+                                Integer.parseInt(tField.getText()));
+                    hundredsCountLbl.setText(Integer.toString(myAtm.getHundreds()));
+                    fiftiesCountLbl.setText(Integer.toString(myAtm.getFifties()));
+                    twentiesCountLbl.setText(Integer.toString(myAtm.getTwenties()));
+                    hField.setText("0");
+                    fField.setText("0");
+                    tField.setText("0");
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(null, ex.getMessage());
+                }
             }
         }
         

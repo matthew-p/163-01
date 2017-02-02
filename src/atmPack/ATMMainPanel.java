@@ -14,7 +14,7 @@ public class ATMMainPanel extends JPanel {
     private JPanel mainPanel;
     
     public ATMMainPanel() {
-        setLayout(new GridLayout(3,2));
+        setLayout(new GridLayout(3,4));
         
         atm1 = new MyATMPanel();
         atm2 = new MyATMPanel();
@@ -35,18 +35,6 @@ public class ATMMainPanel extends JPanel {
         
         setVisible(true);
         
-        /*
-        mainPanel = new JPanel();
-        
-        mainPanel.setLayout(new GridLayout(2,3));
-        
-        mainPanel.add(atm1);
-        mainPanel.add(atm2);
-        mainPanel.add(atm3);
-        mainPanel.add(suspend);
-        
-        mainPanel.setVisible(true);
-        */
     }
     
     private class MainListener implements ActionListener {
