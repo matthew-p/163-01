@@ -5,15 +5,30 @@ import java.util.HashMap;
 public class CoinCount {
     
     /**
-     * this is a dynamic solution to the ATM takeOut problem. 
+     * this is a dynamic solution to solve the ATM takeOut problem
+     * if an unlimited number of bills were available. 
      * it accepts an array of currency denominations, and the 
      * targeted amount to break into those denominations. 
      * Returning a HashMap with each denomination as a key, associated
      * with the total number of times that denomination is used
      * to reach the target total.
-     * @param denom
-     * @param targetChangeAmount
-     * @return
+     * 
+     * It memoizes the total number of all denomination units to reach 
+     * each possible subtotal up to and including the target total
+     * in a one dimensional array, and the last denomination unit used 
+     * to reach that subtotal in a second one dimensional array.
+     *on units
+     * used to reach the target total, by working backwards, getting 
+     * the last denomination used from the second array, and subtracting 
+     * this value from the current subtotal, to then get the number of 
+     * denomination units for that subtotal, removing the last coin to 
+     * reach it, and so on. 
+     * 
+     * Finally, it records the total instances of each denomination unit
+     * in that array in a HashMap, which is then returned. 
+     * @param denom array of usable denominations
+     * @param targetChangeAmount the total amount to reach
+     * @return HashMap key of each denomination, value total times used
      */
     public static HashMap<Integer, Integer> minChange(int[] denom, int targetChangeAmount)
     {

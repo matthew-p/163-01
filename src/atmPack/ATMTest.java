@@ -5,6 +5,10 @@ import static org.junit.Assert.*;
 import java.io.FileNotFoundException;
 
 import org.junit.*;
+import org.junit.experimental.theories.*;
+import org.junit.runner.RunWith;
+
+@RunWith(Theories.class)
 public class ATMTest {
 
 	/**
@@ -32,8 +36,41 @@ public class ATMTest {
 		assertEquals (s3.getTwenties(), 4);
 	}
 	
-	// testing valid takeOut with wide range of
-	// quarters, dimes, nickels, pennies
+	// testing constructor with invalid arguments
+        @Test
+        (expected = IllegalArgumentException.class)
+        public void testConstructorExceptions1() {
+            ATM s1 = new ATM(-1, 0, 0);
+        }
+        
+        @Test
+        (expected = IllegalArgumentException.class)
+        public void testConstructorExceptions2() {
+            ATM s1 = new ATM(0, -1, 0);
+        }
+        
+        @Test
+        (expected = IllegalArgumentException.class)
+        public void testConstructorExceptions3() {
+            ATM s1 = new ATM(0, 0, -1);
+        }
+        
+        @Test
+        (expected = IllegalArgumentException.class)
+        public void testConstructorExceptions4() {
+            ATM s1 = new ATM(null);
+        }
+	
+	// testing valid takeOut overloads with wide range of
+	// input parameters
+        
+        @Test
+        (expected = IllegalArgumentException.class)
+        public void testTakeOut0() {
+                ATM s1 = new ATM(3,3,2);
+                s1.takeOut(null);
+        }
+        
 	@Test
 	public void testTakeOut1() {
 		ATM s1 = new ATM(3,3,2);
@@ -43,7 +80,6 @@ public class ATMTest {
 		assertEquals (s1.getTwenties(), 1);
 	}
 	
-	// testing valid takeOut with wide range of amounts
 	@Test
 	public void testTakeOut2() {
 		ATM s1 = new ATM(5,3,3);
@@ -58,7 +94,6 @@ public class ATMTest {
 		assertEquals (s2.getTwenties(), 1);
 	}
 	
-	       // testing valid takeOut with wide range of amounts
         @Test
         public void testTakeOut3() {
                 ATM s1 = new ATM(5,3,3);
@@ -310,6 +345,56 @@ public class ATMTest {
             
         }
         
+        @Test
+        public void testTakeOut22() {
+            ATM s1 = new ATM(1,1,8);
+            ATM s2 = s1.takeOut(340);
+            
+            assertEquals (s1.getHundreds(), 1);
+            assertEquals (s1.getFifties(), 1);
+            assertEquals (s1.getTwenties(), 8);
+            
+            assertEquals (s2, null);
+            
+        }
+        
+        @Test
+        public void testTakeOut23() {
+            ATM s1 = new ATM(1,1,8);
+            ATM s2 = s1.takeOut(0);
+            
+            assertEquals (s1.getHundreds(), 1);
+            assertEquals (s1.getFifties(), 1);
+            assertEquals (s1.getTwenties(), 8);
+            
+            assertEquals (s2, new ATM(0,0,0));
+            
+        }
+        
+        // checking invalid takeOut input arguments
+        @Test
+        (expected = IllegalArgumentException.class)
+        public void testTakeOut24() {
+            ATM s1 = new ATM(1,1,8);
+            s1.takeOut(2, 0, 0);
+        }
+        
+        @Test
+        (expected = IllegalArgumentException.class)
+        public void testTakeOut25() {
+            ATM s1 = new ATM(2,1,8);
+            ATM s2 = new ATM(2, 0, 10);
+            s1.takeOut(s2);
+        }
+
+        @Test
+        (expected = IllegalArgumentException.class)
+        public void testTakeOutExceptions1() {
+            ATM s1 = new ATM(1, 10, 10);
+            s1.takeOut(-20);
+        }
+        
+        
 	// testing putIn for valid low numbers
 	@Test
 	public void testPutIn() {
@@ -319,6 +404,28 @@ public class ATMTest {
 		assertEquals (s1.getFifties(), 3);
 		assertEquals (s1.getTwenties(), 4);
 	}
+	
+	// checking invalid putIn input arguments
+        @Test
+        (expected = IllegalArgumentException.class)
+        public void testPutInExceptions1() {
+            ATM s1 = new ATM(0, 0, 0);
+            s1.putIn(-1,0,0);
+        }
+        
+        @Test
+        (expected = IllegalArgumentException.class)
+        public void testPutInExceptions2() {
+            ATM s1 = new ATM(0, 0, 0);
+            s1.putIn(0,-1,0);
+        }
+        
+        @Test
+        (expected = IllegalArgumentException.class)
+        public void testPutInExceptions3() {
+            ATM s1 = new ATM(0, 0, 0);
+            s1.putIn(0,0,-1);
+        }
 	
 	// testing putIn and takeOut together
 	@Test
@@ -341,6 +448,22 @@ public class ATMTest {
 		assertFalse(s1.equals(s2));
 		assertTrue(s1.equals(s3));
 	}
+	
+	// null checking equals
+	@Test
+        (expected = IllegalArgumentException.class)
+	public void testEqualNull01() {
+	    ATM s1 = new ATM();
+	    s1.equals(null);
+	}
+	
+	@Test
+        (expected = IllegalArgumentException.class)
+        public void testEqualNull02() {
+            ATM s1 = new ATM();
+            ATM s2 = new ATM();
+            ATM.equals(s1, null);
+        }
 
 	// testing compareTo all returns
 	@Test
@@ -353,6 +476,14 @@ public class ATMTest {
 		assertTrue(s2.compareTo(s1) > 0);
 		assertTrue(s3.compareTo(s1) < 0);
 		assertTrue(s1.compareTo(s4) == 0);
+	}
+	
+	// null checking
+	@Test
+	(expected = IllegalArgumentException.class)
+	public void testCompareToNull() {
+	    ATM s1 = new ATM(2,2,2);
+	    s1.compareTo(null);
 	}
 	
 	// test toString
@@ -369,7 +500,7 @@ public class ATMTest {
 
 	// load and save combined. 
 	@Test
-	public void testLoadSave() throws FileNotFoundException {
+	public void testLoadSave01() throws FileNotFoundException {
 		ATM s1 = new ATM(6, 5, 4);
 		ATM s2 = new ATM(6, 5, 4);
 
@@ -381,8 +512,25 @@ public class ATMTest {
 
 	}
 	
+	// checking file persistance 
+	@Test
+        public void testLoadSave02() throws FileNotFoundException {
+                ATM s1 = new ATM(10, 500, 4000);
+                ATM s2 = new ATM(10, 500, 4000);
+                ATM s3 = new ATM(11, 501, 4001);
 
-	// testing not able to make change
+                s1.save("file1");                
+                s1.putIn(1, 1, 1);
+                s1.save("file2");
+                s1.load("file2");
+                assertTrue(s1.equals(s3));
+                assertFalse(s1.equals(s2));
+                s1.load("file1");
+                assertTrue(s1.equals(s2));
+        }
+	
+
+	// testing not able to make change with takeOut
 	@Test
 	public void testTakeOutNull() {
 		ATM s1 = new ATM(3,1,2);
@@ -390,6 +538,7 @@ public class ATMTest {
 		assertEquals(s2,  null);
 	}
 	
+	// testing global suspend flag
 	@Test
 	public void testMutate01() {
 		ATM s1 = new ATM(6, 5, 4);
@@ -416,10 +565,31 @@ public class ATMTest {
                 assertEquals (s1.getTwenties(), 2);
         }
 	
-	// IMPORTANT: only one test per exception!!!
+	@Test
+	public void testMutate03() {
+	    ATM s1 = new ATM(6, 5, 4);
+	    ATM s2 = new ATM(3,3,3);
+	    ATM s3 = new ATM(4,4,4);
+	    ATM.suspend(true);
+	    s1.takeOut(310);
+	    s2.takeOut(1,1,1);
+	    s3.takeOut(s2);
+	    s1.putIn(1, 1, 1);
+	    ATM.suspend(false);
+            assertEquals (s1.getHundreds(), 6);
+            assertEquals (s1.getFifties(), 5);
+            assertEquals (s1.getTwenties(), 4);
+	               
+	    assertEquals (s2.getHundreds(), 3);
+	    assertEquals (s2.getFifties(), 3);
+	    assertEquals (s2.getTwenties(), 3);
+	                
+	    assertEquals (s3.getHundreds(), 4);
+	    assertEquals (s3.getFifties(), 4);
+	    assertEquals (s3.getTwenties(), 4);
+	}	
 	
-	
-	// testing negative number for nickels, takeOut
+	// testing negative number takeOut inputs
 	@Test
 	(expected = IllegalArgumentException.class)
 	public void testTakeOutNegTwenties() {
